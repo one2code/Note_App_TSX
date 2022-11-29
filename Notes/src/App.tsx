@@ -1,6 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Container} from "react-bootstrap"
 import { Routes, Route, Navigate } from "react-router-dom";
+import NewNote from "./Components/NewNote";
+import Home from "./Components/Home"
+import Show from "./Components/Show"
+import Edit from "./Components/Edit"
+
 
 function App() {
 	return (
