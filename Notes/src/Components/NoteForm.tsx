@@ -1,7 +1,8 @@
 import { Form, Stack, Row, Col, Button } from "react-bootstrap";
 import Select from "react-select";
 import Creatable, { useCreatable } from "react-select/creatable";
-import { Link } from "react-router-dom";
+import { Link, LinkProps } from "react-router-dom";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 function NoteForm() {
 	return (
@@ -30,10 +31,14 @@ function NoteForm() {
 						placeholder="Enter Info"
 					/>
 				</Form.Group>
-                <Stack direction="horizontal" gap={3} className="justify-content-end">
-                    <Button type="submit" variant="outline-primary">Save</Button>
-                    <Button as={Link} to=".." variant="outline-secondary">Cancel</Button>
-                </Stack>
+				<Stack direction="horizontal" gap={3} className="justify-content-end">
+					<Button type="submit" variant="outline-primary">
+						Save
+					</Button>
+					<Button as={Link as any} to="/my-page" variant="outline-secondary">
+						Click me!
+					</Button>
+				</Stack>
 			</Stack>
 		</Form>
 	);
