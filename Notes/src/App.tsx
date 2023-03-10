@@ -6,6 +6,8 @@ import Home from "./Components/Home";
 import Show from "./Components/Show";
 import Edit from "./Components/Edit";
 import useLocalStorage from "./Hooks/useLocalStorage";
+import { useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export type Note = {
 	id: string;
@@ -13,12 +15,12 @@ export type Note = {
 
 export type RawNote = {
 	id: string;
-};
+} & RawNoteData;
 
 export type RawNoteData = {
 	title: string;
 	markdown: string;
-	tags: string[];
+	tagIds: string[];
 };
 
 export type NoteData = {
@@ -36,19 +38,36 @@ function App() {
 	const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
 	const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
 
-	return (
-		<Container className="my-4">
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/new" element={<NewNote />} />
-				<Route path="/:id">
-					<Route index element={<Show />} />
-					<Route path="edit" element={<Edit />} />
-				</Route>
-				<Route path="*" element={<Navigate to="/" />} />
-			</Routes>
-		</Container>
-	);
-}
+	const notesWithTags = useMemo(() => {
+		return notes.map((note) => {
+			return {
+				...note,
+				tags: tags.filter((tag) => note.tagIds.includes(tag.id)),
+			};
+		});
+	}, [notes, tags]);
 
+	function onCreateNote(data: NoteData) {
+		setNotes((prevNotes) => {
+			return [
+				...prevNotes,
+				{ ...data, id: uuidv4(), tagIds: tags.map((tag) => tag.id) },
+			];
+		});
+
+		return (
+			<Container className="my-4">
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/new" element={<NewNote />} />
+					<Route path="/:id">
+						<Route index element={<Show />} />
+						<Route path="edit" element={<Edit />} />
+					</Route>
+					<Route path="*" element={<Navigate to="/" />} />
+				</Routes>
+			</Container>
+		);
+	}
+}
 export default App;
